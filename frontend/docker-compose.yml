@@ -1,0 +1,49 @@
+version: "3.8"
+services:
+    organizr:
+        image: linuxserver/organizr
+        container_name:  organizr
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Asia/Colombo
+        volumes:
+            - /home/bisina/Docker/organizr/config:/config
+        networks:
+            - bisinet_main
+        ports:
+            - 10000:80
+        healthcheck:
+            test: curl --fail -s http://localhost:80/ || exit 1
+            interval: 1m30s
+            timeout: 30s
+            retries: 3
+        restart: unless-stopped
+
+    organizr2:
+        image: organizrtools/organizr-v2:latest
+        container_name: organizr2
+        hostname: organizr
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Asia/Colombo
+        volumes:
+            - /home/bisina/Docker/organizr2/config:/config
+        networks:
+            - bisinet_main
+        ports:
+            - 10001:80
+        healthcheck:
+            test: curl --fail -s http://localhost:80/ || exit 1
+            interval: 1m30s
+            timeout: 30s
+            retries: 3
+        restart: unless-stopped
+                
+
+networks:
+    bisinet_main:
+        driver: bridge
+        external: true
+        name: bisinet

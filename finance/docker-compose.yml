@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+    fireflyiii:
+        image: jc5x/firefly-iii:latest
+        container_name: fireflyiii
+        volumes:
+            - /home/bisina/Docker/export:/var/www/firefly-iii/storage/export
+            - /home/bisina/Docker/upload:/var/www/firefly-iii/storage/upload
+        env_file: .env
+        networks:
+            - bisinet_main
+        ports:
+            - 8070:8080
+        depends_on:
+            - fireflyiiidb
+        healthcheck:
+            test: curl --fail http://10.10.10.134:8070/ || exit 1
+            interval: 30s
+            timeout: 30s
+            retries: 3
+        restart: unless-stopped
+
+    fireflyiiidb:
+        #image: yobasystems/alpine-mariadb:latest
+        image: mariadb:latest
+        container_name: fireflyiiidb
+        environment:
+            - MYSQL_ROOT_PASSWORD=Keshara500@
+            - MYSQL_USER=firefly
+            - MYSQL_PASSWORD=nath500@
+            - MYSQL_DATABASE=firefly
+        volumes:
+            - /home/bisina/Docker/firefly_db:/var/lib/mysql
+        networks:
+            - bisinet_main
+        healthcheck:
+            test: "/usr/bin/mysql --user=firefly --password=nath500@ --execute \"SHOW DATABASES;\""
+            interval: 30s
+            timeout: 10s
+            retries: 3
+        restart: unless-stopped
+
+networks:
+    bisinet_main:
+        driver: bridge
+        external: true
+        name: bisinet

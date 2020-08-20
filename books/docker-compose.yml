@@ -1,0 +1,78 @@
+version: "3.8"
+services:
+    cops:
+        image : linuxserver/cops
+        container_name: cops
+        environment: 
+            - PUID=1000
+            - PGID=1000
+            - TZ=Asia/Colombo
+        volumes:
+            - /home/bisina/Docker/cops/config:/config
+            - /home/bisina/Docker/media/books:/books
+        networks:
+            - bisinet_main
+        ports:
+            - 8051:80
+        healthcheck:
+            # test: curl --fail -s http://10.10.10.134:8051/ || exit 1
+            test: wget --quiet --tries=1 --spider http://10.10.10.134:8051/ || exit 1
+            interval: 1m30s
+            timeout: 30s
+            retries: 3
+        restart: unless-stopped
+
+    calibre-web:
+        image: linuxserver/calibre-web
+        container_name: calibre-web
+        environment: 
+            - PUID=1000
+            - PGID=1000
+            - TZ=Asia/Colombo
+            - DOCKER_MODS=linuxserver/calibre-web:calibre
+        volumes:
+            - /home/bisina/Docker/calibre-web/config:/config
+            - /home/bisina/Docker/media/books:/books
+        networks:
+            - bisinet_main
+        ports:
+            - 8052:8083
+        healthcheck:
+            test: curl --fail -s http://10.10.10.134:8052/ || exit 1
+            interval: 1m30s
+            timeout: 30s
+            retries: 3
+        restart: unless-stopped
+    
+    ubooquity:
+        image: linuxserver/ubooquity
+        container_name: ubooquity
+        environment: 
+            - PUID=1000
+            - PGID=1000
+            - TZ=Asia/Colombo
+            - MAXMEM=1024
+        volumes:
+            - /home/bisina/Docker/ubooquity/config:/config
+            - /home/bisina/Docker/media/books:/books
+            - /home/bisina/Docker/media/comics:/comics
+            - /home/bisina/Docker/media/files:/files
+        networks:
+            - bisinet_main
+        ports:
+            - 8054:2202
+            - 8055:2203
+        healthcheck:
+            # test: curl --fail -s http://10.10.10.134:8054/ubooquity/ || exit 1
+            test: wget --quiet --tries=1 --spider http://10.10.10.134:8054/ubooquity/ || exit 1
+            interval: 60s
+            timeout: 60s
+            retries: 3
+        restart: unless-stopped
+        
+networks:
+    bisinet_main:
+        driver: bridge
+        external: true
+        name: bisinet
+

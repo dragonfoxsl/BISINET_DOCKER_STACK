@@ -1,0 +1,53 @@
+version: "3.8"
+services:
+  pyload:
+    image: linuxserver/pyload
+    container_name: pyload
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Colombo
+    volumes:
+      - /home/bisina/Docker/pyload/config:/config
+      - /home/bisina/Network_Downloads:/downloads
+    networks:
+      - bisinet_main
+    ports:
+      - 8001:8000
+      - 7227:7227 #optional
+    healthcheck:
+      test: curl --fail -s http://10.10.10.100:8001/ || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  rutorrent:
+    image: linuxserver/rutorrent
+    container_name: rutorrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - /home/bisina/Docker/rutorrent/config:/config
+      - /home/bisina/Network_Downloads/Video/Torrents:/downloads
+    networks:
+      - bisinet_main
+    ports:
+      - 8002:80
+      - 5000:5000
+      - 51413:51413
+      - 6881:6881/udp
+    healthcheck:
+      test: curl --fail -s http://10.10.10.100:8002/ || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+networks:
+  bisinet_main:
+    driver: bridge
+    external: true
+    name: bisinet
+  

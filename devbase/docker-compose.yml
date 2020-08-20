@@ -1,0 +1,70 @@
+version: "3.8"
+services:
+  mariadb:
+    image: linuxserver/mariadb
+    container_name: mariadb
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - MYSQL_ROOT_PASSWORD=nath500@
+      - TZ=Asia/Colombo
+      - MYSQL_DATABASE=DBMain
+      - MYSQL_USER=bisina
+      - MYSQL_PASSWORD=nath500@
+    volumes:
+      - /home/bisina/Docker/mariadb/config:/config
+    networks:
+      - bisinet_main
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: "/usr/bin/mysql --user=bisina --password=nath500@ --execute \"SHOW DATABASES;\""
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      - PMA_HOST=10.10.10.100
+    networks:
+      - bisinet_main
+    ports:
+      - 8003:80
+    healthcheck:
+      test: curl --fail -s http://10.10.10.100:8003/ || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  nginx:
+    image: linuxserver/nginx
+    container_name: nginx
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Colombo
+    volumes:
+      - /home/bisina/Docker/nginx/config:/config
+    networks:
+      - bisinet_main
+    ports:
+      - 80:80
+      - 443:443
+    healthcheck:
+      test: curl --fail -s http://10.10.10.100:81/ || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+
+networks:
+  bisinet_main:
+    driver: bridge
+    external: true
+    name: bisinet
+  

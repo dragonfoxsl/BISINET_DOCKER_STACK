@@ -1,0 +1,52 @@
+version: "3.8"
+services:
+    speedtest: # RUN Service without Compose file
+        image: henrywhitaker3/speedtest-tracker:dev
+        container_name: speedtest
+        environment:
+            - TZ="Asia/Colombo"
+            - PUID=1000
+            - PGID=1000
+            - OOKLA_EULA_GDPR=true
+        volumes:
+            - /home/bisina/Docker/speedtest:/config
+        networks:
+            - bisinet_main
+        ports:
+            - 8057:80
+        healthcheck:
+            test: curl --fail http://10.10.10.134:8057/ || exit 1
+            interval: 30s
+            timeout: 30s
+            retries: 3
+        restart: unless-stopped
+   
+    # This IRC client do not support DDC so it can not download files
+    thelounge:
+        image: thelounge/thelounge:latest
+        container_name: thelounge
+        environment:
+            - PUID=1000
+            - PGID=1000
+        volumes:
+            - /home/bisina/Docker/thelounge/data:/var/opt/thelounge
+        networks:
+            - bisinet_main
+        ports:
+            - "8059:9000"
+        healthcheck:
+            test: curl --fail http://10.10.10.134:8059/ || exit 1
+            interval: 30s
+            timeout: 30s
+            retries: 3
+        restart: unless-stopped
+
+    # Must Add User after Creation
+    # docker exec --user node -it thelounge thelounge add bisina
+
+
+networks:
+    bisinet_main:
+        driver: bridge
+        external: true
+        name: bisinet

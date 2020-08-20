@@ -1,0 +1,3 @@
+FROM linuxserver/ubooquity:latest
+
+RUN apk add curl

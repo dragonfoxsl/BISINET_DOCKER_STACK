@@ -1,0 +1,74 @@
+version: "3.8"
+services:
+    tautulli:
+        image: linuxserver/tautulli
+        container_name: tautulli
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Asia/Colombo
+        volumes: 
+            - /home/bisina/Docker/tautulli/config:/config
+            - /home/bisina/Docker/tautulli/logs:/logs
+        networks:
+            - bisinet_main
+        ports:
+            - 8053:8181
+        healthcheck:
+            test: wget --quiet --tries=1 --spider http://10.10.10.134:8053/ || exit 1
+            # test: curl --fail http://10.10.10.134:8053/ || exit 1
+            interval: 30s
+            timeout: 30s
+            retries: 3
+        restart: unless-stopped
+    
+    ombi:
+        image: linuxserver/ombi
+        container_name: ombi
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Asia/Colombo
+            - BASE_URL=/ombi
+        volumes:
+            - /home/bisina/Docker/ombi/config:/config
+        networks:
+            - bisinet_main
+        ports:
+            - 8056:3579
+        healthcheck:
+            test: curl --fail http://10.10.10.134:8056/ || exit 1
+            interval: 30s
+            timeout: 30s
+            retries: 3
+        restart: unless-stopped
+
+    airsonic:
+        image: airsonic/airsonic
+        container_name: airsonic
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Asia/Colombo
+        volumes:
+            - /home/bisina/Docker/airsonic/data:/airsonic/data
+            - /home/bisina/Docker/media/music/:/airsonic/music
+            - /home/bisina/Docker/media/playlists:/airsonic/playlists
+            - /home/bisina/Docker/media/podcasts:/airsonic/podcasts
+        networks:
+            - bisinet_main
+        ports:
+            - 8058:4040
+        healthcheck:
+            test: curl --fail http://10.10.10.134:8058/ || exit 1
+            interval: 30s
+            timeout: 30s
+            retries: 3
+        restart: unless-stopped
+        
+        
+networks:
+    bisinet_main:
+        driver: bridge
+        external: true
+        name: bisinet

@@ -1,0 +1,1 @@
+docker create --name=speedtest -p 8057:80 -v /home/bisina/Docker/speedtest:/config -e PUID=1000 -e PGID=1000 -e OOKLA_EULA_GDPR=true --restart unless-stopped henrywhitaker3/speedtest-tracker:dev

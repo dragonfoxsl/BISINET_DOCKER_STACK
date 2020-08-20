@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+    lychee:
+        image: linuxserver/lychee
+        container_name: lychee
+        environment: 
+            - PUID=1000
+            - PGID=1000
+            - TZ=Asia/Colombo
+            - DB_HOST=10.10.10.100
+            - DB_USERNAME=root
+            - DB_PASSWORD=nath500@
+            - DB_DATABASE=lychee
+        volumes:
+            - /home/bisina/Docker/lychee/config:/config
+            - /home/bisina/Docker/lychee/pictures:/pictures
+        networks:
+            - bisinet_main
+        ports:
+            - 8050:80
+        healthcheck:
+            test: curl --fail http://192.168.127.128:8050/ || exit 1
+            interval: 30s
+            timeout: 30s
+            retries: 3
+        restart: unless-stopped
+
+        
+networks:
+    bisinet_main:
+        driver: bridge
+        external: true
+        name: bisinet
+

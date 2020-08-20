@@ -1,0 +1,3 @@
+FROM linuxserver/cops:latest
+
+RUN apk add curl

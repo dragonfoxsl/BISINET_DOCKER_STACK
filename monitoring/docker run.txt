@@ -1,0 +1,3 @@
+docker run -d -p 9090:9090 --net=host -v /home/bisina/Docker/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml -v /home/bisina/Docker/monitoring/prometheus_db:/etc/prometheus prom/prometheus --config.file="/etc/prometheus/prometheus.yml" --storage.tsdb.path="/home/bisina/Docker/monitoring/prometheus_db"
+
+docker run -d -p 9100:9100 -v "/:/hostfs" --net="host" prom/node-exporter --path.rootfs=/hostfs

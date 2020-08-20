@@ -1,0 +1,39 @@
+Guide : https://gabrieltanner.org/blog/docker-compose
+
+pyload
+docker create --name=pyload -e PUID=1000 -e PGID=1000 -e TZ=Asia/Colombo -p 8001:8000 -p 7227:7227 -v /home/bisina/Docker/pyload/config:/config -v /home/bisina/Network_Downloads:/downloads --restart unless-stopped  linuxserver/pyload
+
+rutorrent
+docker create --name=rutorrent -e PUID=1000 -e PGID=1000 -p 8002:80 -p 5000:5000 -p 51413:51413 -p 6881:6881/udp -v /home/bisina/Docker/rutorrent/config:/config -v /home/bisina/Network_Downloads/Video/Torrents:/downloads --restart unless-stopped linuxserver/rutorrent
+
+nginx
+docker create --name=nginx -e PUID=1000 -e PGID=1000 -e TZ=Asia/Colombo -p 80:80 -p 443:443 -v /home/bisina/Docker/nginx/config:/config --restart unless-stopped linuxserver/nginx
+
+mariadb - create using linux
+docker create --name=mariadb -e PUID=1000 -e PGID=1000 -e MYSQL_ROOT_PASSWORD=nath500@ -e TZ=Asia/Colombo -e MYSQL_DATABASE=DBMain -e MYSQL_USER=bisina -e MYSQL_PASSWORD=nath500@ -p 3306:3306 -v /home/bisina/Docker/mariadb/config:/config --restart unless-stopped linuxserver/mariadb
+
+watchtower
+docker run -d --name watchtower -v /var/run/docker.sock:/var/run/docker.sock --restart unless-stopped containrrr/watchtower --cleanup --debug --include-stopped --interval 1800
+docker run -d --name watchtower -v /var/run/docker.sock:/var/run/docker.sock --restart unless-stopped -e WATCHTOWER_NOTIFICATIONS=gotify -e WATCHTOWER_NOTIFICATION_GOTIFY_URL="http://10.10.10.134:8080" -e WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN="A2PKQfXKKBZY8As" -e WATCHTOWER_NOTIFICATION_GOTIFY_TLS_SKIP_VERIFY=true containrrr/watchtower --cleanup --debug --include-stopped --interval 1800
+
+
+mysql workbench
+docker create --name=mysql-workbench -e PUID=1000 -e PGID=1000 -e TZ=Asia/Colombo -p 8003:3000 -v /home/bisina/Docker/mysql_workbench/config:/config --cap-add="IPC_LOCK" --restart unless-stopped linuxserver/mysql-workbench
+
+phpmyadmin
+Need Files in Locations
+docker run --name myadmin -d -e PMA_HOST=10.10.10.100 -p 8003:80 -v /home/bisina/Docker/phpmyadmin/config:/etc/phpmyadmin -v /home/bisina/Docker/phpmyadmin/www/themes:/var/www/html/themes phpmyadmin/phpmyadmin
+Basic Working
+docker run --name phpmyadmin -d -e PMA_HOST=10.10.10.100 -p 8003:80 phpmyadmin/phpmyadmin
+
+grocy
+docker create --name=grocy -e PUID=1000 -e PGID=1000 -e TZ=Asia/Colombo -p 8004:80 -v /home/bisina/Docker/grocy/config:/config --restart unless-stopped linuxserver/grocy
+docker create --name=grocy -e PUID=1000 -e PGID=1000 -e TZ=Asia/Colombo -p 9283:80 -v /home/bisina/Docker/grocy/config:/config --restart unless-stopped linuxserver/grocy
+
+
+docker run -d --name=pyload -e PUID=1000 -e PGID=1000 -e TZ=Asia/Colombo -p 8001:8000 -p 7227:7227 -v /home/bisina/Docker/pyload/config:/config -v /home/bisina/Network_Downloads:/downloads --restart unless-stopped --health-cmd "curl --fail http://10.10.10.100:8001/pools || exit 1" --health-interval=5s --timeout=3s linuxserver/pyload
+
+docker create --name=rutorrent_test -e PUID=1000 -e PGID=1000 -p 7000:80 -p 5000:5000 -p 51413:51413 -p 6881:6881/udp -v /home/bisina/Docker/rutorrent-test/config:/config -v /home/bisina/Network_Downloads/Video/Torrents:/downloads --restart unless-stopped linuxserver/rutorrent
+
+Remnux Security Testing Distribution
+docker run --rm -it -u remnux -v <local_directory>:/home/remnux/files remnux/remnux-distro bash

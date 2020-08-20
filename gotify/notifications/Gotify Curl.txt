@@ -1,0 +1,16 @@
+======= Windows Login - Powershell
+
+Used One
+curl "http://10.10.10.134:8080/message?token=Azr4_J7MutQYhQq" -F "title='Windows Login'" -F "message='Windows Login Successful BISI-PC03WIN10T'" -F "priority=5"
+
+Task Scheduler Command
+-WindowStyle Hidden -Command curl "http://10.10.10.134:8080/message?token=Azr4_J7MutQYhQq" -F "title='Windows Login'" -F "message='Windows Login Successful BISI-PC03WIN10T'" -F "priority=5"
+
+======= Qbittorrent - Command Line
+
+Used One
+curl -X POST "http://10.10.10.134:8080/message?token=AxAaEx2Jzjj92bX" -H "accept: application/json" -H "Content-Type: application/json" -d "{ \"message\": \"Torrent Information \nName: %N \nSize: %Z \nCategory: %L \nInfo Hash: %I\", \"priority\": 5, \"title\": \"Torrent Download Completed\"}"
+
+Other Examples
+curl -X POST "http://10.10.10.134:8080/message?token=AxAaEx2Jzjj92bX&title=Torrent%20Download%20Completed&message=Torrent%20Information%20%20%0AName:%0D%0A%25N&priority=5"
+cmd.exe /c curl "http://10.10.10.134:8080/message?token=AxAaEx2Jzjj92bX" -F "title=Torrent Download Completed" -F "message=Torrent Downloaded - %N %L %F %Z" -F "priority=5"

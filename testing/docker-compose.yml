@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+    mylar3:
+        image: hotio/mylar3
+        container_name: mylar3
+        volumes:
+            - /home/bisina/Docker/mylar/config:/config
+            - /home/bisina/Docker/media/comics:/comics
+            - /home/bisina/Docker/media/downloads:/downloads
+        env_file: mylar.env
+        networks:
+            - bisinet_main
+        ports:
+            - 8051:8090
+        healthcheck:
+            test: curl --fail http://192.168.127.128:8051/ || exit 1
+            interval: 30s
+            timeout: 30s
+            retries: 3
+        restart: unless-stopped
+
+    qbittorrent:
+        image: linuxserver/qbittorrent
+        container_name: qbittorrent
+        env_file: qbittorrent.env           
+        volumes:
+            - /home/bisina/Docker/qbittorrent/config:/config
+            - /home/bisina/Docker/media/downloads:/downloads
+            - /home/bisina/Docker/media/blackhole:/blackhole
+        networks:
+            - bisinet_main
+        ports:
+            - 6881:6881
+            - 6881:6881/udp
+            - 8052:8052
+        healthcheck:
+            test: curl --fail http://192.168.127.128:8052/ || exit 1
+            interval: 30s
+            timeout: 30s
+            retries: 3
+        restart: unless-stopped
+
+networks:
+    bisinet_main:
+        driver: bridge
+        external: true
+        name: bisinet
