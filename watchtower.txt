@@ -1,0 +1,10 @@
+watchtower
+
+docker run -d --name watchtower -v /var/run/docker.sock:/var/run/docker.sock --restart unless-stopped containrrr/watchtower --cleanup --debug --include-stopped --interval 1800
+
+docker run -d --name watchtower -v /var/run/docker.sock:/var/run/docker.sock --restart unless-stopped \
+-e WATCHTOWER_NOTIFICATIONS=gotify \
+-e WATCHTOWER_NOTIFICATION_GOTIFY_URL="http://10.10.10.134:8080" \
+-e WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN="A2PKQfXKKBZY8As" \
+-e WATCHTOWER_NOTIFICATION_GOTIFY_TLS_SKIP_VERIFY=true containrrr/watchtower \
+--cleanup --debug --include-stopped --interval 1800
